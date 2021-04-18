@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+
+  "name": "Bitcoin, Unit of Account",
+  "version": "0.0.1",
+  "description": "Replace each US$ amount by its equivalent in Bitcoin at the time of navigation",
+  "icons": { "16": "images/bitcoinunitofaccount16.png",
+           "48": "images/bitcoinunitofaccount48.png",
+          "128": "images/bitcoinunitofaccount144.png" },
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["content.js"],
+      "run_at":"document_end"
+    }
+  ],
+  "permissions": [
+    "alarms",
+    "storage",
+    "https://api.coindesk.com/v1/bpi/currentprice/USD.json"
+  ]
+}
