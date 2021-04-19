@@ -4,12 +4,16 @@
   "name": "Bitcoin, Unit of Account",
   "version": "0.0.1",
   "description": "Replace each US$ amount by its equivalent in Bitcoin at the time of navigation",
-  "icons": { "16": "images/bitcoinunitofaccount16.png",
-           "48": "images/bitcoinunitofaccount48.png",
-          "128": "images/bitcoinunitofaccount144.png" },
+  "icons": { 
+    "16": "images/bitcoinunitofaccount16.png",
+    "48": "images/bitcoinunitofaccount48.png",
+    "128": "images/bitcoinunitofaccount144.png" 
+  },
   "content_scripts": [
     {
-      "matches": ["*://*/*"],
+      "matches": [
+        "<all_urls>"
+      ],
       "js": ["content.js"],
       "run_at":"document_end"
     }
