@@ -1,5 +1,0 @@
-// issues: replaceHtml not working on https://www.theblockcrypto.com/linked/101912/binance-15th-quarterly-bnb-burn-token-highest-ever
-// replaceHtml not working on https://etherscan.io/address/0x757e1d3A0f3998787aE173da15bB149660caF010
-
-
-Test this option https://stackoverflow.com/a/10730777 

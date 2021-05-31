@@ -1,6 +1,3 @@
-// bugs: replaceHtml not working on https://www.theblockcrypto.com/linked/101912/binance-15th-quarterly-bnb-burn-token-highest-ever
-// replaceHtml not working on https://etherscan.io/address/0x757e1d3A0f3998787aE173da15bB149660caF010
-
 console.log("Bitcoin, Unit of Account");
 console.log("Current bitcoin price powered by CoinDesk: https://www.coindesk.com/price/bitcoin");
 
@@ -37,14 +34,6 @@ function findAndReplace() {
     // This makes an array of everything inside the body tag
     var elementsInsideBody = [...document.body.getElementsByTagName("*")];
 
-    // elementsInsideBody.forEach(element => {
-    //   element.childNodes.forEach(child => {
-    //     if (child.nodeType === 1) {
-    //       replaceAmazonHtmlRegex(child);
-    //     }    
-    //   });
-    // });
-
     elementsInsideBody.forEach(element => {
       element.childNodes.forEach(child => {
         if (child.nodeType === 3) {
@@ -54,6 +43,14 @@ function findAndReplace() {
             replaceText(child);
           }
         }
+      });
+    });
+
+    elementsInsideBody.forEach(element => {
+      element.childNodes.forEach(child => {
+        if (child.nodeType === 1) {
+          replaceAmazonHtmlRegex(child);
+        }    
       });
     });
 
@@ -122,13 +119,13 @@ function convertText(match, amount, multiplier) {
   //   amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   //   unit = "µ₿";
   // } 
-  else if (amountInBTC < 1.0) {
+  else if (amountInBTC < 10.0) {
     amountInBTC *= 1000;
     amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     unit = "m₿";
   }
   else {
-    amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
   }
 
   let result;
