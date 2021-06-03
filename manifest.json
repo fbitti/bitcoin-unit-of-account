@@ -82,7 +82,7 @@
         "https://www.lbc.co.uk/*",
         "https://www.heraldscotland.com/*",
         "https://www.thedailymash.co.uk/*",
-        "https://www.bournemouthecho.co.uk/"
+        "https://www.bournemouthecho.co.uk/*"
       ],
       "js": [
         "content.js"
