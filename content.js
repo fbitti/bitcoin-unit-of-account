@@ -1,7 +1,9 @@
 console.log("Bitcoin, Unit of Account");
 console.log("Current bitcoin price powered by CoinDesk: https://www.coindesk.com/price/bitcoin");
 
-var htmlOn = false;
+// Future feature: provide a way to add a tooltip that shows the original dollar amount on top of each replaced text.
+// var htmlOn = false;
+
 var bitcoinPrice;
 
 // exclude email apps from the extension
@@ -10,6 +12,7 @@ if (!window.location.hostname.includes("mail")) {
     .then(response => response.json())
     .then(responseObj => { 
       bitcoinPrice = responseObj.bpi.USD.rate_float;
+      console.log("The bitcoin exchange rate is now", bitcoinPrice);
       // replace the text as soon as the page is loaded
       window.onload = setTimeout(findAndReplace, 1000);
     })
@@ -40,11 +43,12 @@ function findAndReplace() {
     elementsInsideBody.forEach(element => {
       element.childNodes.forEach(child => {
         if (child.nodeType === 3) {
-          if (htmlOn) { 
-            replaceHtml(child.parentElement);
-          } else {
+          // Future feature: provide a way to add a tooltip that shows the original dollar amount on top of each replaced text.
+          // if (htmlOn) { 
+          //   replaceHtml(child.parentElement);
+          // } else {
             replaceText(child);
-          }
+          // }
         }
       });
     });
@@ -71,7 +75,7 @@ function findAndReplace() {
 }
 
 function replaceText(node) {
-  console.log("replaceText was called");
+  console.log("Bitcoin, Unit of Account extension is trying to find text to replace.");
   let text = node.nodeValue;
   let genericTextRegex = /(?:(?:\$|USD)(?:\s*)(\d[\d,]*(?:\.\d+)?)((K|G|M|Bn?|Tn?)|(?:\s+)(thousands?|millions?|billions?|bn|trillions?|tn))?)/gi;
   node.nodeValue = text.replace(genericTextRegex, convertText);
@@ -126,10 +130,13 @@ function convertText(match, amount, multiplier) {
   //   amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   //   unit = "µ₿";
   // } 
-  else if (amountInBTC < 10.0) {
+  else if (amountInBTC < 1.0) {
     amountInBTC *= 1000;
     amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     unit = "m₿";
+  }
+  else if (amountInBTC < 10.0) {
+    amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   }
   else {
     amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
@@ -212,84 +219,85 @@ function newAmazonHtml(regexMatch, dollarAmount, centsAmount) {
   }
 }
 
-function replaceHtml(node) {
-  let html = node.innerHTML;
-  node.innerHTML = html.replace(/(>[^<]*)((?:\$|USD)(?:\s*)(\d[\d,]*(?:\.\d+)?)((K|G|M|B|T)|(?:\s+)(thousands?|millions?|billions?|trillions?))?)/gi, convertHtml);
-}
+// Future feature: provide a way to add a tooltip that shows the original dollar amount on top of each replaced text.
+// function replaceHtml(node) {
+//   let html = node.innerHTML;
+//   node.innerHTML = html.replace(/(>[^<]*)((?:\$|USD)(?:\s*)(\d[\d,]*(?:\.\d+)?)((K|G|M|B|T)|(?:\s+)(thousands?|millions?|billions?|trillions?))?)/gi, convertHtml);
+// }
 
-function convertHtml(match, initialHtmlText, amountText, amountValue, multiplier) {
-  amountText = amountText.trim();
-  let amountInUSD = parseFloat(amountValue.replaceAll(",",""));
-  let amountInBTC = amountInUSD / bitcoinPrice;
+// function convertHtml(match, initialHtmlText, amountText, amountValue, multiplier) {
+//   amountText = amountText.trim();
+//   let amountInUSD = parseFloat(amountValue.replaceAll(",",""));
+//   let amountInBTC = amountInUSD / bitcoinPrice;
 
-  if (Boolean(multiplier)) {
-    multiplier = multiplier.toLowerCase().trim(); 
-    switch(multiplier) {
-      case "thousands":
-      case "thousand":
-      case "k":
-      case "g":
-        amountInBTC *= 1000;
-        break;
-      case "millions":
-      case "million":
-      case "m":
-        amountInBTC *= 1000*1000;
-        break;
-      case "billions":
-      case "billion":
-      case "b":
-        amountInBTC *= 1000*1000*1000;
-        break;
-      case "trillions":
-      case "trillion":
-      case "t":
-        amountInBTC *= 1000*1000*1000*1000;
-        break;
-    }
-  } else {
-    multiplier = "";
-  }
+//   if (Boolean(multiplier)) {
+//     multiplier = multiplier.toLowerCase().trim(); 
+//     switch(multiplier) {
+//       case "thousands":
+//       case "thousand":
+//       case "k":
+//       case "g":
+//         amountInBTC *= 1000;
+//         break;
+//       case "millions":
+//       case "million":
+//       case "m":
+//         amountInBTC *= 1000*1000;
+//         break;
+//       case "billions":
+//       case "billion":
+//       case "b":
+//         amountInBTC *= 1000*1000*1000;
+//         break;
+//       case "trillions":
+//       case "trillion":
+//       case "t":
+//         amountInBTC *= 1000*1000*1000*1000;
+//         break;
+//     }
+//   } else {
+//     multiplier = "";
+//   }
 
-  let unit = "₿";
-  // convert to the most visually pleasant unit
-  if (amountInBTC < 0.001) {
-    amountInBTC *= 1000*1000*100;
-    amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
-    unit = "sat";
-  }
-  // Placeholder condition in case we want to add µ₿
-  // else if (amountInBTC < 0.001) {
-  //   amountInBTC *= 1000*1000;
-  //   amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-  //   unit = "µ₿";
-  // } 
-  else if (amountInBTC < 1.0) {
-    amountInBTC *= 1000;
-    amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    unit = "m₿";
-  }
-  else {
-    amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-  }
+//   let unit = "₿";
+//   // convert to the most visually pleasant unit
+//   if (amountInBTC < 0.001) {
+//     amountInBTC *= 1000*1000*100;
+//     amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+//     unit = "sat";
+//   }
+//   // Placeholder condition in case we want to add µ₿
+//   // else if (amountInBTC < 0.001) {
+//   //   amountInBTC *= 1000*1000;
+//   //   amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+//   //   unit = "µ₿";
+//   // } 
+//   else if (amountInBTC < 1.0) {
+//     amountInBTC *= 1000;
+//     amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+//     unit = "m₿";
+//   }
+//   else {
+//     amountInBTC = amountInBTC.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+//   }
 
-  let result;
+//   let result;
 
-  // ₿ comes before the value, but sats come after
-  if (unit == "sat") {
-    result = " " + amountInBTC + " " + unit;
-  } else {
-    result = " " + unit + " " + amountInBTC;
-  }
+//   // ₿ comes before the value, but sats come after
+//   if (unit == "sat") {
+//     result = " " + amountInBTC + " " + unit;
+//   } else {
+//     result = " " + unit + " " + amountInBTC;
+//   }
 
-  result = initialHtmlText + 
-          '<span title="$ ' + 
-          amountValue +
-          ' ' +
-          multiplier +
-          '">' + 
-          result + 
-          '</span>';
+//   result = initialHtmlText + 
+//           '<span title="$ ' + 
+//           amountValue +
+//           ' ' +
+//           multiplier +
+//           '">' + 
+//           result + 
+//           '</span>';
 
-  return result;
-}
+//   return result;
+// }
