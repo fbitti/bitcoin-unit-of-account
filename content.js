@@ -65,7 +65,7 @@ function findAndReplace() {
     }
 
     console.log("The Bitcoin, Unit of Account extension replaced all $ amounts.");
-    if (htmlOn) console.log("Hover over the replaced amount if you want to see the original value.");
+    // if (htmlOn) console.log("Hover over the replaced amount if you want to see the original value.");
 
     // Future feature: if we cannot use the real-time Bitcoin price, try to use the last one we stored
     // chrome.storage.local.set({"bitcoinPrice": bitcoinPrice}, function() {
