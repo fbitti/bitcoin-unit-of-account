@@ -6,6 +6,14 @@ I created this extension for fun, and to let you experience an hypothetical futu
 In the discussions about cryptocurrencies one of the most prominent topics is whether Bitcoin will ever become a unit of account, in other words, currency amounts will be expressed in BTC, not dollars.
 So, now, when reading the news or shopping online you constantly see dollar amounts. If you ever had the curiosity to know how much that amount would be if converted to bitcoins, this extension is for you.
 
+## How does it work?
+When you turn on this extension, and browse an enabled website, at each webpage it will:
+1. wait a few seconds, so most of the dollar amounts become available. This is especially important on online stores, as they typically make personalised recommendations for you by loading the products and prices on the fly, while you browse the website.
+2. retrieve the current bitcoin price ("powered by Coindesk")
+3. run a script that reads all dollar amounts on the page and convert them to bitcoin.
+ 
+The conversion from dollar to bitcoin happens only once to prevent consuming too much resources from your browser and from your computer. Therefore, if the page you are looking at constantly refreshes the prices, you will start seeing dollar amounts again.  I believe this is the right design decision as it is enough to demonstrate a concept.
+
 ## Where?
 The following websites are supported:
 - https://www.amazon.com
@@ -80,14 +88,6 @@ The following websites are supported:
 - https://www.thedailymash.co.uk
 - https://www.bournemouthecho.co.uk
 
-## How does it work?
-When you turn on this extension, it will:
-1. wait a few seconds, so most of the dollar amounts become available. This is especially important on online stores, as they typically make personalised recommendations for you by loading the products and prices on the fly, while you browse the website.
-2. retrieve the current bitcoin price ("powered by Coindesk")
-3. run a script that reads all dollar amounts on the page and convert them to bitcoin.
- 
-The conversion from dollar to bitcoin happens only once to prevent consuming too much resources from your browser and from your computer. Therefore, if the page you are looking at constantly refreshes the prices, you will start seeing dollar amounts again.  I believe this is the right design decision as it is enough to demonstrate a concept.
-
 ## Examples
 Let me give you 2 examples, the 1st one from a news page that originally reads:
 "Stocks mixed as June begins, oil nears $68 per barrel
@@ -104,7 +104,22 @@ which was replaced by:
 In order to view the original prices, you need to disable the extension and reload the page.
 
 ## Screenshots
+### Amazon
+![Amazon](https://github.com/fbitti/bitcoin-unit-of-account/blob/d851ca16b8dbe503fb9b62b37b91503ab7c68da7/images/promo-screenshot-1.png)
+### Wikipedia
+![Wikipedia](https://github.com/fbitti/bitcoin-unit-of-account/blob/d851ca16b8dbe503fb9b62b37b91503ab7c68da7/images/promo-screenshot-4.png)
+### CNN
+![CNN](https://github.com/fbitti/bitcoin-unit-of-account/blob/d851ca16b8dbe503fb9b62b37b91503ab7c68da7/images/promo-screenshot-3.png)
+### Fox News
+![Fox News](https://github.com/fbitti/bitcoin-unit-of-account/blob/d851ca16b8dbe503fb9b62b37b91503ab7c68da7/images/promo-screenshot-2.png)
 
+## Disclaimers
+I'm not associated in any way with these companies and any text replacement will happen only in your browser, without their knowledge.
 
-## Disclaimer
 You won't be able to pay in bitcoins if the online store does not accept it. Even if it does accept bitcoin, this extension's calculations may differ, thus make sure you rely on the online store's own conversion rate.
+
+## Contributions
+Feel free to submit pull requests
+
+## Contact
+You may reach me out at https://twitter.com/f_bitti
