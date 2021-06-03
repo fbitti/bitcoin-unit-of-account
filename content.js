@@ -4,33 +4,36 @@ console.log("Current bitcoin price powered by CoinDesk: https://www.coindesk.com
 var htmlOn = false;
 var bitcoinPrice;
 
-fetch('https://api.coindesk.com/v1/bpi/currentprice/USD.json')
-  .then(response => response.json())
-  .then(responseObj => { 
-    bitcoinPrice = responseObj.bpi.USD.rate_float;
-    // replace the text as soon as the page is loaded
-    window.onload = setTimeout(findAndReplace, 1000);
-  })
-  .catch(error => {
-    // if we cannot use the real-time Bitcoin price,
-    // try to use the last one we stored
-    chrome.storage.local.get(["bitcoinPrice"], (result) => {
-      if (Boolean(result.bitcoinPrice)) {
-        bitcoinPrice = result.bitcoinPrice;
-        // console.warn("The extension ₿ - Unit of Account is using a recently saved price of $", bitcoinPrice);
-        window.onload = setTimeout(findAndReplace, 1000);
-      } else {
-        bitcoinPrice = null;
-        console.warn("The extension ₿ - Unit of Account was not able to retrieve a recent Bitcoin price and is not replacing any dollar prices due to error", error);
-        console.warn("Reload the webpage if you want to try again.");  
-      }
-    });
-  });
+// exclude email apps from the extension
+if (!window.location.hostname.includes("mail")) {
+  fetch('https://api.coindesk.com/v1/bpi/currentprice/USD.json')
+    .then(response => response.json())
+    .then(responseObj => { 
+      bitcoinPrice = responseObj.bpi.USD.rate_float;
+      // replace the text as soon as the page is loaded
+      window.onload = setTimeout(findAndReplace, 1000);
+    })
+    .catch(console.error);
+    // Future feature: if we cannot use the real-time Bitcoin price, try to use the last one we stored
+    // .catch(error => {
+    //   chrome.storage.local.get(["bitcoinPrice"], (result) => {
+    //     if (Boolean(result.bitcoinPrice)) {
+    //       bitcoinPrice = result.bitcoinPrice;
+    //       // console.warn("The extension ₿ - Unit of Account is using a recently saved price of $", bitcoinPrice);
+    //       window.onload = setTimeout(findAndReplace, 1000);
+    //     } else {
+    //       bitcoinPrice = null;
+    //       console.warn("The extension ₿ - Unit of Account was not able to retrieve a recent Bitcoin price and is not replacing any dollar prices due to error", error);
+    //       console.warn("Reload the webpage if you want to try again.");  
+    //     }
+    //   });
+    // });
+}
 
-// Find all the US$ amounts in the page and replace by ₿
+// Chrome Extension: Bitcoin, Unit of Account
+// It finds all the US$ amounts in the page and replace them by ₿ amounts
 function findAndReplace() {
   if (Boolean(bitcoinPrice)) {
-    // console.log("The extension ₿ - Unit of Account the current price of $", bitcoinPrice, "\nPowered by Coindesk https://www.coindesk.com/price/bitcoin");
     // This makes an array of everything inside the body tag
     var elementsInsideBody = [...document.body.getElementsByTagName("*")];
 
@@ -46,20 +49,24 @@ function findAndReplace() {
       });
     });
 
-    elementsInsideBody.forEach(element => {
-      element.childNodes.forEach(child => {
-        if (child.nodeType === 1) {
-          replaceAmazonHtmlRegex(child);
-        }    
+    // The extension recognizes Amazon's special HTML formatting of pricing
+    if (window.location.hostname == "www.amazon.com") {
+      elementsInsideBody.forEach(element => {
+        element.childNodes.forEach(child => {
+          if (child.nodeType === 1) {
+            replaceAmazonHtmlRegex(child);
+          }    
+        });
       });
-    });
+    }
 
     console.log("The Bitcoin, Unit of Account extension replaced all $ amounts.");
     if (htmlOn) console.log("Hover over the replaced amount if you want to see the original value.");
 
-    chrome.storage.local.set({"bitcoinPrice": bitcoinPrice}, function() {
-      console.log("Storing the Bitcoin price of US$", bitcoinPrice.toFixed(2), "for future use.");
-    });
+    // Future feature: if we cannot use the real-time Bitcoin price, try to use the last one we stored
+    // chrome.storage.local.set({"bitcoinPrice": bitcoinPrice}, function() {
+    //   console.log("Storing the Bitcoin price of US$", bitcoinPrice.toFixed(2), "for future use.");
+    // });
   }
 }
 
@@ -137,6 +144,7 @@ function convertText(match, amount, multiplier) {
     result = " " + unit + " " + amountInBTC;
   }
 
+  // Feature request: provide a tooltip that shows the original dollar amount on mouse over 
   // result = initialHtmlText + 
   //         '<span title="$ ' + 
   //         amountValue +
@@ -282,7 +290,6 @@ function convertHtml(match, initialHtmlText, amountText, amountValue, multiplier
           '">' + 
           result + 
           '</span>';
-  // console.log(result);
 
   return result;
 }
