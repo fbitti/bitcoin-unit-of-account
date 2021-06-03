@@ -14,10 +14,10 @@ When you turn on this extension, and browse an enabled website, at each webpage 
  
 The conversion from dollar to bitcoin happens only once to prevent consuming too much resources from your browser and from your computer. Therefore, if the page you are looking at constantly refreshes the prices, you will start seeing dollar amounts again.  I believe this is the right design decision as it is enough to demonstrate a concept.
 
-You may not see dollar amounts being replaced on:
+You may not see dollar amounts being replaced in:
 - ads
 - images
-- anywhere where they're not preceded by a dollar sign ($, US$, USD, etc)
+- anywhere where they are not placed after a dollar identifier ($, US$, USD, etc)
 
 ## Where?
 The following websites are currently supported:
